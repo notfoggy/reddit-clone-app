@@ -10,11 +10,13 @@ const origin = "http://localhost:3000";
 app.use(
   cors({
     origin,
+    credentials: true,
   })
 );
 // json요청을 해석
 app.use(express.json());
 app.use(morgan("dev"));
+app.use("/api/auth", authRoutes);
 
 app.get("/", (_, res) => res.send("running"));
 
@@ -27,5 +29,3 @@ app.listen(port, async () => {
     })
     .catch((err) => console.log(err));
 });
-
-app.use("/api/auth", authRoutes);
