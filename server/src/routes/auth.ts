@@ -90,6 +90,7 @@ const login = async (req: Request, res: Response) => {
 		if (Object.keys(errors).length > 0) {
 			return res.status(400).json(errors);
 		}
+
 		// 디비에서 유저찾기
 		const user = await User.findOneBy({ username });
 
@@ -110,7 +111,14 @@ const login = async (req: Request, res: Response) => {
 		const token = jwt.sign({ username }, process.env.JWT_SECRET!);
 
 		// 토큰을 쿠키에 저장
-		res.set('Set-Cookie', cookie.serialize('token', token));
+		res.set(
+			'Set-Cookie',
+			cookie.serialize('token', token, {
+				httpOnly: true,
+				maxAge: 60 * 60 * 24 * 7,
+				path: '/',
+			})
+		);
 
 		return res.json({ user, token });
 	} catch (error) {
